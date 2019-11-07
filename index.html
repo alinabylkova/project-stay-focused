@@ -30,21 +30,48 @@
   <body>
     <header></header>
     <main>
-      <div id="tasks">
-        <div id="listToolbar">
-          <h1 class="listName"></h1>
-          <div class="actionBar"></div>
-        </div>
-        <div class="taskArea">
-          <div class="addTask">
-            <button class="plusButton">+</button>
-            <input id="newTodoInput" type="text" placeholder="Add new to-do..." />
+      <div class="mainInterface">
+        <div class="navigation">
+          <div class="searchToolBar">
+            <div class="toggleIcon">=</div>
+            <div class="searchInput"></div>
+            <div class="searchIcon">O</div>
+          </div>
+          <div class="userToolBar">
+            <div class="userIcon">a</div>
+            <div class="userName">a</div>
+            <div class="bellIcon">a</div>
+            <div class="conversationIcon">a</div>
+          </div>
+          <div class="listArea">
+            <div class="listArea_sub">
+              <div class="listIcon">b</div>
+              <div class="listName">b</div>
+              <div class="counter">b</div>
+              <div class="EditList">b</div>
+            </div>
+          </div>
+          <div class="addList">
+            <div class="plusButton">+</div>
+            <div class="createListText">Create list</div>
           </div>
         </div>
-        <div class="taskList">
-          <ul class="tasks">
-            <li class="taskItem"></li>
-          </ul>
+        <div class="tasks">
+          <div class="listToolBar">
+            <h1 class="title">To do</h1>
+            <div class="actionBar"></div>
+          </div>
+          <div class="taskArea">
+            <div class="addTask">
+              <button class="plusIcon">+</button>
+              <input id="newTodoInput" type="text" placeholder="Add new to-do..." />
+            </div>
+          </div>
+          <div class="taskList">
+            <ul class="tasks">
+              <li class="taskItem">Read</li>
+            </ul>
+          </div>
         </div>
       </div>
     </main>
