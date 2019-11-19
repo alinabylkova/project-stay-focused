@@ -1,0 +1,133 @@
+.mainInterface {
+  height: 100vh;
+  display: grid;
+  grid-template-areas: 'navigation tasks';
+  grid-template-columns: 1.2fr 4fr;
+  border: 2px solid black;
+}
+
+.navigation {
+  grid-area: navigation;
+  display: grid;
+  grid-template-areas:
+    'searchToolBar'
+    'userToolBar'
+    'listArea'
+    'addList';
+  grid-template-rows: 45px 45px 1fr 45px;
+  border: 2px solid black;
+}
+
+.searchToolBar {
+  grid-area: searchToolBar;
+  display: grid;
+  grid-template-areas: 'toggleIcon searchInput searchIcon';
+  grid-template-columns: 1fr 8fr 1fr;
+  border: 2px solid green;
+}
+
+.userToolBar {
+  grid-area: userToolBar;
+  display: grid;
+  grid-template-areas: 'userIcon userName bellIcon conversationIcon';
+  grid-template-columns: 1fr 7fr 1fr 1fr;
+  border: 2px solid green;
+}
+
+.listArea_sub {
+  grid-area: listArea;
+  height: 45px;
+  display: grid;
+  grid-template-areas: 'listIcon listName counter EditList';
+  grid-template-columns: 1fr 7fr 1fr 1fr;
+  border: 2px solid green;
+}
+
+.addList {
+  grid-area: addList;
+  display: grid;
+  grid-template-areas: 'plusButton createListText';
+  grid-template-columns: 1fr 9fr;
+  border: 2px solid green;
+}
+
+.toggleIcon {
+  grid-area: toggleIcon;
+  border: 2px solid black;
+}
+
+.searchInput {
+  grid-area: searchInput;
+  border: 2px solid black;
+}
+
+.searchIcon {
+  grid-area: searchIcon;
+  border: 2px solid black;
+}
+
+.userIcon {
+  grid-area: userIcon;
+  border: 2px solid black;
+}
+
+.userName {
+  grid-area: userName;
+  border: 2px solid black;
+}
+
+.bellIcon {
+  grid-area: bellIcon;
+  border: 2px solid black;
+}
+
+.conversationIcon {
+  grid-area: conversationIcon;
+  border: 2px solid black;
+}
+
+.listIcon {
+  grid-area: listIcon;
+  border: 2px solid black;
+}
+
+.listName {
+  grid-area: listName;
+  border: 2px solid black;
+}
+
+.counter {
+  grid-area: counter;
+  border: 2px solid black;
+}
+
+.EditList {
+  grid-area: EditList;
+  border: 2px solid black;
+}
+
+.plusButton {
+  grid-area: plusButton;
+  border: 2px solid black;
+}
+
+.createListText {
+  grid-area: createListText;
+  border: 2px solid black;
+}
+
+.tasks {
+  display: grid;
+  grid-area: tasks;
+  grid-template-rows: 45px 45px 1fr;
+  border: 2px solid black;
+}
+
+.addTask {
+  display: grid;
+  grid-template-columns: 30px 1fr;
+}
+
+.tasks {
+  list-style-type: none;
+}
