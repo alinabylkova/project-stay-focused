@@ -20,7 +20,7 @@ let TaskList = mongoose.model('TaskList', taskListSchema);
 //Create a schema for users
 let usersSchema = new mongoose.Schema({
   userLogin: String,
-  password: String,
+  userPassword: String,
 });
 
 //Create a model for users
@@ -31,6 +31,8 @@ mockData = [];
 server.get('/', function(req, res) {
   res.send(mockData);
 });
+
+//crud for taskList
 
 // “/tasks” => “Get all tasks”
 server.get('/tasks', function(req, res) {
@@ -101,6 +103,7 @@ server.delete('/tasks/:id', function(req, res) {
   });
 });
 
+//Create new task
 server.post('/tasks', function(req, res) {
   let newTask = req.body.taskMessage;
   let markedImportant = req.body.important;
@@ -120,6 +123,47 @@ server.post('/tasks', function(req, res) {
   TaskList({ taskMessage: newTask, important: important }).save(function(err, data) {
     if (err) {
       res.status(400).send("Couldn't create the task");
+      return;
+    }
+    res.send(data);
+  });
+});
+
+//crud for users
+
+// “/users” => “Get all users”
+server.get('/users', function(req, res) {
+  // get data from mongodb and pass it to view
+  Users.find({}, function(err, data) {
+    if (err) {
+      res.status(404).send('Not found');
+      return;
+    }
+    res.send(data);
+  });
+});
+
+// “/users/:id” => “Get specific user”
+server.get('/users/:id', function(req, res) {
+  let id = req.params.id;
+  // get specific user from mongodb and pass it to view
+  Users.find({ _id: id }, function(err, data) {
+    if (err) {
+      res.status(404).send('Not found');
+      return;
+    }
+    res.send(data);
+  });
+});
+
+//Create new user
+server.post('/users', function(req, res) {
+  let newUser = req.body.userLogin;
+  let newPassword = req.body.userPassword; //Validation
+  // get data from the view and add it to mongodb
+  Users({ userLogin: newUser, userPassword: newPassword }).save(function(err, data) {
+    if (err) {
+      res.status(400).send("Couldn't create new user");
       return;
     }
     res.send(data);
