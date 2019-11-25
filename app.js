@@ -8,13 +8,23 @@ mongoose.connect(
   'mongodb+srv://db-user:ZgITFSQ5UNBkpe9i@stayfocused-v9puq.mongodb.net/test?retryWrites=true&w=majority',
 );
 
-//Create a schema
+//Create a schema for task list
 let taskListSchema = new mongoose.Schema({
   taskMessage: String,
   important: Boolean,
 });
 
+//Create a model for task list
 let TaskList = mongoose.model('TaskList', taskListSchema);
+
+//Create a schema for users
+let usersSchema = new mongoose.Schema({
+  userLogin: String,
+  password: String,
+});
+
+//Create a model for users
+let Users = mongoose.model('Users', usersSchema);
 
 mockData = [];
 
