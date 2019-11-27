@@ -1,7 +1,8 @@
 let express = require('express');
+let mongoose = require('mongoose');
+
 let server = express();
 server.use(express.urlencoded()); //Parse URL-encoded bodies instead of body-parser
-let mongoose = require('mongoose');
 
 //Connect to database
 mongoose.connect(
@@ -14,22 +15,20 @@ let taskListSchema = new mongoose.Schema({
   important: Boolean,
 });
 
-//Create a model for task list
-let TaskList = mongoose.model('TaskList', taskListSchema);
-
 //Create a schema for users
 let usersSchema = new mongoose.Schema({
   userLogin: String,
   userPassword: String,
 });
 
+//Create a model for task list
+let TaskList = mongoose.model('TaskList', taskListSchema);
+
 //Create a model for users
 let Users = mongoose.model('Users', usersSchema);
 
-mockData = [];
-
 server.get('/', function(req, res) {
-  res.send(mockData);
+  res.sendFile(__dirname + '/index.html');
 });
 
 //crud for taskList
@@ -39,7 +38,7 @@ server.get('/tasks', function(req, res) {
   // get data from mongodb and pass it to view
   TaskList.find({}, function(err, data) {
     if (err) {
-      res.status(404).send('Not found');
+      res.status(404).send('Not found', err);
       return;
     }
     res.send(data);
@@ -52,7 +51,7 @@ server.get('/tasks/:id', function(req, res) {
   // get specific data from mongodb and pass it to view
   TaskList.find({ _id: id }, function(err, data) {
     if (err) {
-      res.status(404).send('Not found');
+      res.status(404).send('Not found', err);
       return;
     }
     res.send(data);
@@ -68,22 +67,27 @@ server.put('/tasks/:id', function(req, res) {
   let query = {};
 
   if (taskMessage !== undefined) {
-    query.taskMessage = taskMessage;
-  }
-  if (important === undefined) {
-  } else if (important === 'true') {
-    query.important = true;
-  } else if (important === 'false') {
-    query.important = false;
-  } else {
-    res.status(400).send('Wrong input, id is not a number');
+    if (taskMessage.length === 0) {
+      res.status(400).send('Wrong input, taskMessage should not be blank');
+    } else {
+      query.taskMessage = taskMessage;
+    }
   }
 
-  console.log(query);
+  if (important !== undefined) {
+    if (important === 'true') {
+      query.important = true;
+    } else if (important === 'false') {
+      query.important = false;
+    } else {
+      res.status(400).send('Wrong input, important is not a boolean');
+    }
+  }
+
   // find and update the requested item with query object
   TaskList.findOneAndUpdate({ _id: id }, query, function(err, data) {
     if (err) {
-      res.status(404).send('Not found');
+      res.status(404).send('Not found', err);
       return;
     }
     res.send(data);
@@ -96,7 +100,7 @@ server.delete('/tasks/:id', function(req, res) {
   // delete the requested item from mongodb
   TaskList.find({ _id: id }).remove(function(err, data) {
     if (err) {
-      res.status(404).send('Not found');
+      res.status(404).send('Not found', err);
       return;
     }
     res.send(data);
@@ -122,7 +126,7 @@ server.post('/tasks', function(req, res) {
   // get data from the view and add it to mongodb
   TaskList({ taskMessage: newTask, important: important }).save(function(err, data) {
     if (err) {
-      res.status(400).send("Couldn't create the task");
+      res.status(400).send("Couldn't create the task", err);
       return;
     }
     res.send(data);
@@ -149,7 +153,7 @@ server.get('/users/:id', function(req, res) {
   // get specific user from mongodb and pass it to view
   Users.find({ _id: id }, function(err, data) {
     if (err) {
-      res.status(404).send('Not found');
+      res.status(404).send('Not found', err);
       return;
     }
     res.send(data);
@@ -168,6 +172,18 @@ server.post('/users', function(req, res) {
     }
     res.send(data);
   });
+});
+//or another way
+Users.createUser({
+  user: 'accountUser',
+  pwd: passwordPrompt(),
+  roles: ['readWrite'],
+}).save(function(err, data) {
+  if (err) {
+    res.status(400).send("Couldn't create new user");
+    return;
+  }
+  res.send(data);
 });
 
 // Tell Express to listen for requests (start server)
