@@ -44,16 +44,13 @@
             <div class="conversationIcon">a</div>
           </div>
           <div class="listArea">
-            <div class="listArea_sub">
-              <div class="listIcon">b</div>
-              <div class="listName">b</div>
-              <div class="counter">b</div>
-              <div class="EditList">b</div>
-            </div>
+            <!-- populated via js -->
           </div>
           <div class="addList">
-            <div class="plusButton">+</div>
-            <div class="createListText">Create list</div>
+            <div class="plusButton"><i id="addNewList" class="fas fa-plus-square"></i></div>
+            <div class="createListText">
+              <input id="newListName" type="text" placeholder="Create a list" />
+            </div>
           </div>
         </div>
         <div class="tasks">
@@ -73,9 +70,6 @@
               <div class="taskItem">Read</div>
               <div class="deleteButton">-</div>
             </div>
-            <!-- <ul class="tasks">
-              <li class="taskItem">Read</li>
-            </ul> -->
           </div>
         </div>
       </div>
