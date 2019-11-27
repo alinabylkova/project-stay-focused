@@ -1,8 +1,11 @@
 let express = require('express');
 let mongoose = require('mongoose');
 let passwordValidator = require('password-validator');
+let cookieParser = require('cookie-parser');
 
 let server = express();
+
+server.use(cookieParser());
 server.use(express.urlencoded()); //Parse URL-encoded bodies instead of body-parser
 
 const Schema = mongoose.Schema;
@@ -29,24 +32,34 @@ pwdValidator
   .not()
   .spaces(); // Should not have spaces
 
-//Create a schema for task list
-let taskListSchema = new mongoose.Schema({
+//Create a schema for tasks
+let taskSchema = new Schema({
   // we don't specify _id because it's set to ObjectId by default
   // _id: { type: Schema.Types.ObjectId },
   taskMessage: { type: String, required: true },
   important: { type: Boolean, default: false },
-  userId: { type: Schema.Types.ObjectId, ref: 'users' },
+  listId: { type: Schema.Types.ObjectId, ref: 'lists', required: true },
 });
 
-//Create a schema for users
-let usersSchema = new mongoose.Schema({
-  userLogin: { type: String, unique: true, required: true },
-  userPassword: { type: String, required: true },
+//Create a schema for lists
+let listSchema = new Schema({
+  listName: { type: String, required: true },
+  userId: { type: Schema.Types.ObjectId, ref: 'users', required: true },
   tasks: [{ type: Schema.Types.ObjectId, ref: 'tasks' }],
 });
 
-//Create a model for task list
-let TaskList = mongoose.model('tasks', taskListSchema);
+//Create a schema for users
+let usersSchema = new Schema({
+  userLogin: { type: String, unique: true, required: true },
+  userPassword: { type: String, required: true },
+  lists: [{ type: Schema.Types.ObjectId, ref: 'lists' }],
+});
+
+//Create a model for tasks
+let Tasks = mongoose.model('tasks', taskSchema);
+
+//Create a model for lists
+let List = mongoose.model('lists', listSchema);
 
 //Create a model for users
 let Users = mongoose.model('users', usersSchema);
@@ -68,19 +81,21 @@ server.get('/js/script.js', function(req, res) {
   res.sendFile(__dirname + '/js/script.js');
 });
 
-//crud for taskList
+// login
+server.post('/login', function(req, res) {
+  let name = req.body.username;
+  let pwd = req.body.password;
 
-// “/user/:userId/tasks => “Get all tasks of specific user”
-server.get('/users/:userId/tasks', function(req, res) {
-  let userId = req.params.userId;
-  // get data from mongodb and pass it to view
-  TaskList.find({ userId: userId }, function(err, data) {
+  Users.findOne({ userLogin: name, userPassword: pwd }, function(err, foundUser) {
     if (err) {
       console.log(err);
       res.status(404).send('Not found');
-      return;
     }
-    res.send(data);
+    if (!foundUser) {
+      res.status(404).send('Not found');
+    }
+
+    res.cookie('token', foundUser._id).send();
   });
 });
 
@@ -88,7 +103,7 @@ server.get('/users/:userId/tasks', function(req, res) {
 server.get('/tasks/:id', function(req, res) {
   let id = req.params.id;
   // get specific data from mongodb and pass it to view
-  TaskList.find({ _id: id }, function(err, data) {
+  Tasks.findById(id, function(err, data) {
     if (err) {
       console.log(err);
       res.status(404).send('Not found');
@@ -127,7 +142,7 @@ server.put('/tasks/:id', function(req, res) {
   }
 
   // find and update the requested item with query object
-  TaskList.findOneAndUpdate({ _id: id }, query, function(err, data) {
+  Tasks.updateOne({ _id: id }, query, function(err, data) {
     if (err) {
       console.log(err);
       res.status(404).send('Not found');
@@ -141,13 +156,13 @@ server.put('/tasks/:id', function(req, res) {
 server.delete('/tasks/:id', function(req, res) {
   let id = req.params.id;
   // delete the requested item from mongodb
-  TaskList.find({ _id: id }).remove(function(err, data) {
+  Tasks.findByIdAndDelete(id, function(err) {
     if (err) {
       console.log(err);
       res.status(404).send('Not found');
       return;
     }
-    res.send(data);
+    res.send('Removed');
   });
 });
 
@@ -156,7 +171,7 @@ server.post('/tasks', function(req, res) {
   let newTask = req.body.taskMessage;
   let markedImportant = req.body.important;
 
-  let userId = req.body.userId;
+  let listId = req.body.listId;
 
   let important = false;
   if (markedImportant == 'true') {
@@ -173,30 +188,165 @@ server.post('/tasks', function(req, res) {
     return;
   }
 
-  Users.find({ _id: userId }, function(err, foundUser) {
+  if (listId === undefined || isBlank(listId)) {
+    res.status(400).send('Wrong input, listId is undefined');
+    return;
+  }
+
+  List.findById(listId, function(err, foundList) {
     if (err) {
       console.log(err);
-      res.status(404).send('User not found');
+      res.status(500).send('Internal error');
+      return;
+    }
+    if (foundList.length === 0) {
+      res.status(404).send('List is not found');
       return;
     }
 
-    let user = foundUser[0];
-
     // get data from the view and add it to mongodb
-    TaskList({ taskMessage: newTask, important: important, userId: user._id }).save(function(
-      err,
-      createdTask,
-    ) {
+    Tasks({
+      taskMessage: newTask,
+      important: important,
+      listId: foundList._id,
+    }).save(function(err, createdTask) {
       if (err) {
         console.log(err);
         res.status(400).send("Couldn't create the task");
         return;
       }
 
-      user.tasks.push(createdTask);
-      user.save();
+      foundList.tasks.push(createdTask);
+
+      foundList.save();
 
       res.send(createdTask);
+    });
+  });
+});
+
+//crud for lists
+
+// “/lists” => “Get all lists” //Remove this section
+// server.get('/lists', function(req, res) {
+//   // get data from mongodb and pass it to view
+//   List.find({}, function(err, data) {
+//     if (err) {
+//       console.log(err);
+//       res.status(404).send('Not found');
+//       return;
+//     }
+//     res.send(data);
+//   });
+// });
+
+server.get('/lists', function(req, res) {
+  let userId = req.cookies.token;
+  console.log(userId);
+  // get data from mongodb and pass it to view
+  List.find({ userId: userId }, function(err, data) {
+    if (err) {
+      res.status(404).send('Not found');
+      return;
+    }
+    res.send(data);
+  });
+});
+
+// “/lists/:id” => “Get specific list with all related tasks”
+server.get('/lists/:id', function(req, res) {
+  let id = req.params.id;
+  // get specific list from mongodb and pass it to view
+  List.findById(id)
+    .populate('tasks')
+    .exec(function(err, data) {
+      if (err) {
+        console.log(err);
+        res.status(404).send('Not found');
+        return;
+      }
+
+      res.send(data);
+    });
+});
+
+// “/lists/:id/?listName=” => “Update list”
+server.put('/lists/:id', function(req, res) {
+  let id = req.params.id;
+  let listName = req.query.listName;
+  // let counter = req.query.counter; //Write a code later
+
+  if (listName === undefined || isBlank(listName)) {
+    res.status(400).send('Wrong input, listName should not be blank');
+  }
+
+  // find and update the requested list with query object
+  List.findOneAndUpdate({ _id: id }, { listName: listName }, function(err, data) {
+    if (err) {
+      console.log(err);
+      res.status(404).send('Not found');
+      return;
+    }
+    res.send(data);
+  });
+});
+
+// “/lists/:id” => “Delete specific list”
+server.delete('/lists/:id', function(req, res) {
+  let id = req.params.id;
+  // delete the requested list from mongodb
+  Tasks.deleteMany({ listId: id }, function(err) {
+    if (err) {
+      console.log(err);
+      res.status(404).send('Not found');
+      return;
+    }
+    List.findByIdAndDelete(id, function(err) {
+      if (err) {
+        console.log(err);
+        res.status(404).send('Not found');
+        return;
+      }
+      res.send('Deleted');
+    });
+  });
+});
+
+//Create new list
+server.post('/lists', function(req, res) {
+  let newList = req.body.listName;
+  // let numberOfTasks = req.body.counter;
+
+  let userId = req.body.userId;
+
+  if (newList === undefined || isBlank(newList)) {
+    res.status(400).send('Wrong input, list name is undefined');
+    return;
+  }
+
+  Users.findById(userId, function(err, foundUser) {
+    if (err) {
+      console.log(err);
+      res.status(404).send('User not found');
+      return;
+    }
+
+    // get data from the view and add it to mongodb
+    List({ listName: newList, userId: foundUser._id }).save(function(
+      //Add to the object {counter: numberOfTasks} later
+      err,
+      createdList,
+    ) {
+      if (err) {
+        console.log(err);
+        res.status(400).send("Couldn't create the list");
+        return;
+      }
+
+      foundUser.lists.push(createdList);
+      foundUser.save();
+
+      res.send(createdList);
     });
   });
 });
@@ -220,8 +370,8 @@ server.get('/users', function(req, res) {
 server.get('/users/:id', function(req, res) {
   let id = req.params.id;
   // get specific user from mongodb and pass it to view
-  Users.find({ _id: id })
-    .populate('tasks')
+  Users.findById(id)
+    .populate('tasks', 'lists')
     .exec(function(err, data) {
       if (err) {
         console.log(err);
@@ -233,10 +383,24 @@ server.get('/users/:id', function(req, res) {
     });
 });
 
+// “/users/:userId/lists => “Get all lists of specific user”
+// server.get('/users/:userId/lists', function(req, res) {
+//   let userId = req.params.userId;
+//   // get data from mongodb and pass it to view
+//   List.find({ userId: userId }, function(err, data) {
+//     if (err) {
+//       console.log(err);
+//       res.status(404).send('Not found');
+//       return;
+//     }
+//     res.send(data);
+//   });
+// });
+
 //Create new user
 server.post('/users', function(req, res) {
   let newUser = req.body.userLogin;
-  let newPassword = req.body.userPassword; //Validation
+  let newPassword = req.body.userPassword;
 
   if (newUser === undefined || isBlank(newUser)) {
     res.status(400).send('Wrong input, username is undefined');
