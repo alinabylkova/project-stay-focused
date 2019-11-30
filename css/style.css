@@ -132,8 +132,8 @@
 .taskList_sub {
   height: 35px;
   display: grid;
-  grid-template-areas: 'starIcon taskItem deleteButton';
-  grid-template-columns: 30px 1fr 30px;
+  grid-template-areas: 'starIcon taskItem editButton deleteButton';
+  grid-template-columns: 30px 1fr 30px 30px;
   border: 2px solid green;
 }
 
@@ -144,6 +144,11 @@
 
 .taskItem {
   grid-area: taskItem;
+  border: 2px solid black;
+}
+
+.editButton {
+  grid-area: editButton;
   border: 2px solid black;
 }
 
