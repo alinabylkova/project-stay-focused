@@ -3,7 +3,7 @@
   display: grid;
   grid-template-areas: 'navigation tasks';
   grid-template-columns: 1.2fr 4fr;
-  border: 2px solid black;
+  /* border: 2x solid black; */
 }
 
 .navigation {
@@ -15,7 +15,7 @@
     'listArea'
     'addList';
   grid-template-rows: 45px 45px 1fr 45px;
-  border: 2px solid black;
+  /* border: 2px solid black; */
 }
 
 .searchToolBar {
@@ -23,7 +23,8 @@
   display: grid;
   grid-template-areas: 'toggleIcon searchInput searchIcon';
   grid-template-columns: 1fr 8fr 1fr;
-  border: 2px solid green;
+  /* changend the color/khadar */
+  background-color: rgb(66, 117, 66);
 }
 
 .userToolBar {
@@ -31,7 +32,7 @@
   display: grid;
   grid-template-areas: 'userIcon userName bellIcon conversationIcon';
   grid-template-columns: 1fr 7fr 1fr 1fr;
-  border: 2px solid green;
+  /* border: 2px solid green; */
 }
 
 .listArea_sub {
@@ -40,7 +41,7 @@
   display: grid;
   grid-template-areas: 'listIcon listName counter EditList';
   grid-template-columns: 1fr 7fr 1fr 1fr;
-  border: 2px solid green;
+  /* border: 2px solid green; */
 }
 
 .addList {
@@ -48,17 +49,17 @@
   display: grid;
   grid-template-areas: 'plusButton createListText';
   grid-template-columns: 1fr 9fr;
-  border: 2px solid green;
+  /* border: 2px solid green; */
 }
 
 .toggleIcon {
   grid-area: toggleIcon;
-  border: 2px solid black;
+  /* border: 2px solid black; */
 }
 
 .searchInput {
   grid-area: searchInput;
-  border: 2px solid black;
+  /* border: 2px solid black; */
 }
 
 .searchIcon {
@@ -155,4 +156,50 @@
 .deleteButton {
   grid-area: deleteButton;
   border: 2px solid black;
+}
+
+/* New css code by khadar */
+.body {
+  font-family: 'Indie Flower', cursive;
+  color: #fff;
+  /* background-image: url('/img_bkground.jpg'); */
+}
+
+/* -------This is the h1 title That also will become the todo list-------- */
+.title {
+}
+
+/* Toolbar background color changed*/
+.listToolBar {
+  background-color: rgb(86, 126, 86);
+}
+.taskArea {
+  padding: 0.8rem 0;
+  width: 98%;
+  margin: 0 auto;
+  color: #fff;
+}
+
+#newTodoInput,
+.plusIcon {
+  background-color: rgb(86, 126, 86);
+  border-radius: 5px;
+  border: none;
+  color: #fff;
+  padding: 1rem;
+}
+
+/* This is hidden until it is connectet to database */
+.taskList_sub {
+  display: none;
+}
+
+.tasks {
+  background: linear-gradient(rgba(29, 38, 113, 0.8), rgba(86, 126, 86, 0.8)),
+    url('/img_toronto.jpg'); /* The least supported option. */
+  /* background-image: url('/img_toronto.jpg'); */
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  background-color: rgb(86, 126, 86, 0.9);
+  /* opacity: 0.7; */
 }
