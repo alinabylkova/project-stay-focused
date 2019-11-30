@@ -10,7 +10,7 @@
       rel="stylesheet"
     />
     <!--JQuery-->
-    <script src="https://code.jquery.com/jquery-3.1.1.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <!-- Required meta tags -->
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <!-- Bootstrap CSS-->
@@ -26,6 +26,9 @@
       integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
       crossorigin="anonymous"
     ></script>
+
+    <script src="js/tasks.js"></script>
+    <script src="js/lists.js"></script>
   </head>
   <body>
     <header></header>
@@ -60,16 +63,12 @@
           </div>
           <div class="taskArea">
             <div class="addTask">
-              <button class="plusIcon">+</button>
+              <button class="plusIcon"><i id="addNewTask" class="fas fa-plus-square"></i></button>
               <input id="newTodoInput" type="text" placeholder="Add new to-do..." />
             </div>
           </div>
           <div class="taskList">
-            <div class="taskList_sub">
-              <div class="starIcon">*</div>
-              <div class="taskItem">Read</div>
-              <div class="deleteButton">-</div>
-            </div>
+            <!-- populated via js -->
           </div>
         </div>
       </div>
