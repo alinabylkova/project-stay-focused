@@ -5,14 +5,14 @@ let cookieParser = require('cookie-parser');
 
 let server = express();
 
-server.use(cookieParser());
+server.use(cookieParser()); // Parse Cookies
 server.use(express.urlencoded()); //Parse URL-encoded bodies instead of body-parser
 
-const Schema = mongoose.Schema;
+const Schema = mongoose.Schema; //we can give any name to our const and mongoose.Schema means that we refer to object inside mongoose named Schema
 
 //Connect to database
 mongoose.connect(
-  'mongodb+srv://db-user:ZgITFSQ5UNBkpe9i@stayfocused-v9puq.mongodb.net/test?retryWrites=true&w=majority',
+  'mongodb+srv://db-user:1111@stayfocused-v9puq.mongodb.net/test?retryWrites=true&w=majority',
 );
 
 let pwdValidator = new passwordValidator();
@@ -70,7 +70,7 @@ function isBlank(str) {
 }
 
 server.get('/', function(req, res) {
-  res.sendFile(__dirname + '/index.html');
+  res.sendFile(__dirname + '/index.html'); //dirname is the folder where our nodejs is running
 });
 
 server.get('/css/style.css', function(req, res) {
@@ -81,6 +81,47 @@ server.get('/js/script.js', function(req, res) {
   res.sendFile(__dirname + '/js/script.js');
 });
 
+server.get('/js/tasks.js', function(req, res) {
+  res.sendFile(__dirname + '/js/tasks.js');
+});
+
+server.get('/js/lists.js', function(req, res) {
+  res.sendFile(__dirname + '/js/lists.js');
+});
+
+// for checking auth
+server.use('/tasks*', function(req, res, next) {
+  let userId = req.cookies.token;
+  Users.findById(userId, function(err, foundUser) {
+    if (err) {
+      console.log(err);
+      res.status(500).send();
+      return;
+    }
+    if (!foundUser) {
+      res.status(401).send();
+      return;
+    }
+    next();
+  });
+});
+
+server.use('/lists*', function(req, res, next) {
+  let userId = req.cookies.token;
+  Users.findById(userId, function(err, foundUser) {
+    if (err) {
+      console.log(err);
+      res.status(500).send();
+      return;
+    }
+    if (!foundUser) {
+      res.status(401).send();
+      return;
+    }
+    next();
+  });
+});
+
 // login
 server.post('/login', function(req, res) {
   let name = req.body.username;
@@ -89,15 +130,21 @@ server.post('/login', function(req, res) {
   Users.findOne({ userLogin: name, userPassword: pwd }, function(err, foundUser) {
     if (err) {
       console.log(err);
-      res.status(404).send('Not found');
+      res.status(500).send();
     }
     if (!foundUser) {
-      res.status(404).send('Not found');
+      res.status(401).send();
     }
 
-    res.cookie('token', foundUser._id).send();
+    //New date is a current date
+    let tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    //To set a expiration date for our cookies
+    res.cookie('token', foundUser._id, { expires: tomorrow }).redirect('/');
   });
 });
+
+//crud for tasks
 
 // “/tasks/:id” => “Get specific task”
 server.get('/tasks/:id', function(req, res) {
@@ -106,7 +153,7 @@ server.get('/tasks/:id', function(req, res) {
   Tasks.findById(id, function(err, data) {
     if (err) {
       console.log(err);
-      res.status(404).send('Not found');
+      res.status(500).send();
       return;
     }
     res.send(data);
@@ -145,7 +192,7 @@ server.put('/tasks/:id', function(req, res) {
   Tasks.updateOne({ _id: id }, query, function(err, data) {
     if (err) {
       console.log(err);
-      res.status(404).send('Not found');
+      res.status(500).send();
       return;
     }
     res.send(data);
@@ -159,10 +206,10 @@ server.delete('/tasks/:id', function(req, res) {
   Tasks.findByIdAndDelete(id, function(err) {
     if (err) {
       console.log(err);
-      res.status(404).send('Not found');
+      res.status(500).send();
       return;
     }
-    res.send('Removed');
+    res.status(204).send();
   });
 });
 
@@ -172,7 +219,6 @@ server.post('/tasks', function(req, res) {
   let markedImportant = req.body.important;
 
   let listId = req.body.listId;
-
   let important = false;
   if (markedImportant == 'true') {
     important = true;
@@ -199,8 +245,8 @@ server.post('/tasks', function(req, res) {
       res.status(500).send('Internal error');
       return;
     }
-    if (foundList.length === 0) {
-      res.status(404).send('List is not found');
+    if (!foundList) {
+      res.status(404).send();
       return;
     }
 
@@ -212,12 +258,13 @@ server.post('/tasks', function(req, res) {
     }).save(function(err, createdTask) {
       if (err) {
         console.log(err);
-        res.status(400).send("Couldn't create the task");
+        res.status(500).send();
         return;
       }
 
       foundList.tasks.push(createdTask);
 
+      // foundList returned from mongoose model already has save() method, to avoid using List.updateOne(query, updateQuery, callback)
       foundList.save();
 
       res.send(createdTask);
@@ -227,26 +274,12 @@ server.post('/tasks', function(req, res) {
 
 //crud for lists
 
-// “/lists” => “Get all lists” //Remove this section
-// server.get('/lists', function(req, res) {
-//   // get data from mongodb and pass it to view
-//   List.find({}, function(err, data) {
-//     if (err) {
-//       console.log(err);
-//       res.status(404).send('Not found');
-//       return;
-//     }
-//     res.send(data);
-//   });
-// });
-
 server.get('/lists', function(req, res) {
   let userId = req.cookies.token;
-  console.log(userId);
   // get data from mongodb and pass it to view
   List.find({ userId: userId }, function(err, data) {
     if (err) {
-      res.status(404).send('Not found');
+      res.status(500).send();
       return;
     }
     res.send(data);
@@ -262,7 +295,7 @@ server.get('/lists/:id', function(req, res) {
     .exec(function(err, data) {
       if (err) {
         console.log(err);
-        res.status(404).send('Not found');
+        res.status(500).send();
         return;
       }
 
@@ -284,7 +317,7 @@ server.put('/lists/:id', function(req, res) {
   List.findOneAndUpdate({ _id: id }, { listName: listName }, function(err, data) {
     if (err) {
       console.log(err);
-      res.status(404).send('Not found');
+      res.status(500).send();
       return;
     }
     res.send(data);
@@ -298,26 +331,24 @@ server.delete('/lists/:id', function(req, res) {
   Tasks.deleteMany({ listId: id }, function(err) {
     if (err) {
       console.log(err);
-      res.status(404).send('Not found');
+      res.status(500).send();
       return;
     }
     List.findByIdAndDelete(id, function(err) {
       if (err) {
         console.log(err);
-        res.status(404).send('Not found');
+        res.status(500).send();
         return;
       }
-      res.send('Deleted');
+      res.status(204).send();
     });
   });
 });
 
 //Create new list
 server.post('/lists', function(req, res) {
+  let userId = req.cookies.token;
   let newList = req.body.listName;
-  // let numberOfTasks = req.body.counter;
-
-  let userId = req.body.userId;
 
   if (newList === undefined || isBlank(newList)) {
     res.status(400).send('Wrong input, list name is undefined');
@@ -327,7 +358,7 @@ server.post('/lists', function(req, res) {
   Users.findById(userId, function(err, foundUser) {
     if (err) {
       console.log(err);
-      res.status(404).send('User not found');
+      res.status(500).send();
       return;
     }
 
@@ -339,7 +370,7 @@ server.post('/lists', function(req, res) {
     ) {
       if (err) {
         console.log(err);
-        res.status(400).send("Couldn't create the list");
+        res.status(500).send();
         return;
       }
 
@@ -351,52 +382,6 @@ server.post('/lists', function(req, res) {
   });
 });
 
-//crud for users
-
-// “/users” => “Get all users”
-server.get('/users', function(req, res) {
-  // get data from mongodb and pass it to view
-  Users.find({}, function(err, data) {
-    if (err) {
-      console.log(err);
-      res.status(404).send('Not found');
-      return;
-    }
-    res.send(data);
-  });
-});
-
-// “/users/:id” => “Get specific user”
-server.get('/users/:id', function(req, res) {
-  let id = req.params.id;
-  // get specific user from mongodb and pass it to view
-  Users.findById(id)
-    .populate('tasks', 'lists')
-    .exec(function(err, data) {
-      if (err) {
-        console.log(err);
-        res.status(404).send('Not found');
-        return;
-      }
-
-      res.send(data);
-    });
-});
-
-// “/users/:userId/lists => “Get all lists of specific user”
-// server.get('/users/:userId/lists', function(req, res) {
-//   let userId = req.params.userId;
-//   // get data from mongodb and pass it to view
-//   List.find({ userId: userId }, function(err, data) {
-//     if (err) {
-//       console.log(err);
-//       res.status(404).send('Not found');
-//       return;
-//     }
-//     res.send(data);
-//   });
-// });
-
 //Create new user
 server.post('/users', function(req, res) {
   let newUser = req.body.userLogin;
@@ -406,10 +391,6 @@ server.post('/users', function(req, res) {
     res.status(400).send('Wrong input, username is undefined');
     return;
   }
-
-  // Validate against a password string
-  console.log(pwdValidator.validate(newPassword));
-  // => true
 
   if (newPassword === undefined || isBlank(newPassword)) {
     res.status(400).send('Wrong input, password is undefined');
@@ -425,7 +406,7 @@ server.post('/users', function(req, res) {
   Users({ userLogin: newUser, userPassword: newPassword }).save(function(err, data) {
     if (err) {
       console.log(err);
-      res.status(400).send("Couldn't create new user");
+      res.status(500).send();
       return;
     }
     res.send(data);
@@ -436,3 +417,24 @@ server.post('/users', function(req, res) {
 server.listen(3000, function() {
   console.log('Server listening on port 3000');
 });
+
+/// server.use(function(req, res, next))
+// .use() function is started before any client request
+// used by libraries like cookie-parser, url-encoding and our own authentication
+// -= next -> function to proceed further like ``` next(); ```
+
+/// server.get/put/delete/post(function(req, res))
+
+// -= next -> function to proceed further
+// -= req (request) client request to server
+//  req.url     = returns full url
+//  req.cookies = returns object of all sent cookies (we use cookie-parser lib)
+//  req.body    = returns object of all sent data via POST (we user url-encoder lib)
+//  req.param   = returns a param from 'parameter url' example: ``` /bla_bla/:this_param ``` => ``` req.param.this_param ```
+//  req.query   = returns object of all sent parameters, for example ``` bla_bla/:this_param?query_param1=1&query_param2=2 ``` =>
+//              req.query.query_param1 // req.query.query_param2
+
+// -= res (response) response of server to client
+//  res.send() or res.redirect(path) -> just respond with anything (without it, client will hang) OR redirect to another url
+//  res.status(201).send('text') - set status response code (200, 400, 401 etc.) and return data which is String 'text'
+//  res.sendFile(__dirname + '/index.html'); - find a file in a directory using /index.html path and return the content of the file
