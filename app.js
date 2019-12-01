@@ -8,7 +8,7 @@ const server = express();
 server.use(cookieParser()); // Parse Cookies
 server.use(express.urlencoded()); //Parse URL-encoded bodies instead of body-parser
 
-const mongoDb = process.env.MONGO_DB || 'user:12345';
+const mongoDb = process.env.MONGO_DB || 'db-user:uNqPYeGtHMMEjiNn';
 const port = process.env.PORT || 3000;
 const Schema = mongoose.Schema; //we can give any name to our const and mongoose.Schema means that we refer to object inside mongoose named Schema
 
@@ -110,6 +110,10 @@ server.get('/img/img_toronto.jpg', function(req, res) {
 // for checking auth
 server.use('/tasks*', function(req, res, next) {
   let userId = req.cookies.token;
+  if (!userId) {
+    res.status(401).send();
+    return;
+  }
   Users.findById(userId, function(err, foundUser) {
     if (err) {
       console.log(err);
@@ -126,6 +130,10 @@ server.use('/tasks*', function(req, res, next) {
 
 server.use('/lists*', function(req, res, next) {
   let userId = req.cookies.token;
+  if (!userId) {
+    res.status(401).send();
+    return;
+  }
   Users.findById(userId, function(err, foundUser) {
     if (err) {
       console.log(err);
@@ -149,9 +157,11 @@ server.post('/login', function(req, res) {
     if (err) {
       console.log(err);
       res.status(500).send();
+      return;
     }
     if (!foundUser) {
       res.status(401).send();
+      return;
     }
 
     //New date is a current date
