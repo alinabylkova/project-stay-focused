@@ -2,21 +2,25 @@
   "name": "project-stay-focused",
   "version": "1.0.0",
   "description": "Team project \"Stay focused\" by 2019 fall alumini - Alina, Kadar and Shruti",
-  "main": "app_old.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "engines": {
-    "node": "10.x"
-  },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/alinabylkova/project-stay-focused"
+    "url": "git+https://github.com/alinabylkova/project-stay-focused.git"
   },
+  "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/alinabylkova/project-stay-focused/issues"
   },
-  "homepage": "https://github.com/alinabylkova/project-stay-focused#readme"
+  "homepage": "https://github.com/alinabylkova/project-stay-focused#readme",
+  "dependencies": {
+    "cookie-parser": "^1.4.4",
+    "express": "^4.17.1",
+    "mongoose": "^5.7.13",
+    "password-validator": "^5.0.3"
+  }
 }
