@@ -4,11 +4,15 @@
   "description": "Team project \"Stay focused\" by 2019 fall alumini - Alina, Kadar and Shruti",
   "main": "app.js",
   "scripts": {
+    "start": "node app",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/alinabylkova/project-stay-focused.git"
+  },
+  "engines": {
+    "node": "10.x"
   },
   "keywords": [],
   "author": "",
