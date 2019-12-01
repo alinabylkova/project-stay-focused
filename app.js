@@ -3,16 +3,18 @@ let mongoose = require('mongoose');
 let passwordValidator = require('password-validator');
 let cookieParser = require('cookie-parser');
 
-let server = express();
+const server = express();
 
 server.use(cookieParser()); // Parse Cookies
 server.use(express.urlencoded()); //Parse URL-encoded bodies instead of body-parser
 
+const mongoDb = process.env.MONGO_DB || 'user:12345';
+const port = process.env.PORT || 3000;
 const Schema = mongoose.Schema; //we can give any name to our const and mongoose.Schema means that we refer to object inside mongoose named Schema
 
 //Connect to database
 mongoose.connect(
-  'mongodb+srv://db-user:1111@stayfocused-v9puq.mongodb.net/test?retryWrites=true&w=majority',
+  `mongodb+srv://${mongoDb}@stayfocused-v9puq.mongodb.net/test?retryWrites=true&w=majority`,
 );
 
 let pwdValidator = new passwordValidator();
@@ -73,6 +75,14 @@ server.get('/', function(req, res) {
   res.sendFile(__dirname + '/index.html'); //dirname is the folder where our nodejs is running
 });
 
+server.get('/login', function(req, res) {
+  res.sendFile(__dirname + '/login.html'); //dirname is the folder where our nodejs is running
+});
+
+server.get('/css/login.css', function(req, res) {
+  res.sendFile(__dirname + '/css/login.css');
+});
+
 server.get('/css/style.css', function(req, res) {
   res.sendFile(__dirname + '/css/style.css');
 });
@@ -87,6 +97,14 @@ server.get('/js/tasks.js', function(req, res) {
 
 server.get('/js/lists.js', function(req, res) {
   res.sendFile(__dirname + '/js/lists.js');
+});
+
+server.get('/img/desk.jpg', function(req, res) {
+  res.sendFile(__dirname + '/img/desk.jpg');
+});
+
+server.get('/img/img_toronto.jpg', function(req, res) {
+  res.sendFile(__dirname + '/img/img_toronto.jpg');
 });
 
 // for checking auth
@@ -140,7 +158,7 @@ server.post('/login', function(req, res) {
     let tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     //To set a expiration date for our cookies
-    res.cookie('token', foundUser._id, { expires: tomorrow }).redirect('/');
+    res.cookie('token', foundUser._id, { expires: tomorrow }).send('/');
   });
 });
 
@@ -363,11 +381,7 @@ server.post('/lists', function(req, res) {
     }
 
     // get data from the view and add it to mongodb
-    List({ listName: newList, userId: foundUser._id }).save(function(
-      //Add to the object {counter: numberOfTasks} later
-      err,
-      createdList,
-    ) {
+    List({ listName: newList, userId: foundUser._id }).save(function(err, createdList) {
       if (err) {
         console.log(err);
         res.status(500).send();
@@ -414,7 +428,7 @@ server.post('/users', function(req, res) {
 });
 
 // Tell Express to listen for requests (start server)
-server.listen(3000, function() {
+server.listen(port, function() {
   console.log('Server listening on port 3000');
 });
 

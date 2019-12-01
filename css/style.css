@@ -1,3 +1,9 @@
+.body {
+  font-family: 'Indie Flower', cursive;
+  color: #fff;
+  /* background-image: url('/img_bkground.jpg'); */
+}
+
 .mainInterface {
   height: 100vh;
   display: grid;
@@ -32,28 +38,29 @@
   display: grid;
   grid-template-areas: 'userIcon userName bellIcon conversationIcon';
   grid-template-columns: 1fr 7fr 1fr 1fr;
+  color: black;
   /* border: 2px solid green; */
 }
 
 .listArea_sub {
   grid-area: listArea;
-  height: 45px;
+  height: 50px;
   display: grid;
   grid-template-areas: 'listIcon listName counter EditList';
   grid-template-columns: 1fr 7fr 1fr 1fr;
+  color: black;
   /* border: 2px solid green; */
 }
 
 .addList {
   grid-area: addList;
   display: grid;
-  grid-template-areas: 'plusButton createListText';
-  grid-template-columns: 1fr 9fr;
-  /* border: 2px solid green; */
+  color: black;
 }
 
 .toggleIcon {
   grid-area: toggleIcon;
+  font-size: 22px;
   /* border: 2px solid black; */
 }
 
@@ -64,64 +71,100 @@
 
 .searchIcon {
   grid-area: searchIcon;
-  border: 2px solid black;
+  font-size: 22px;
+  /* border: 2px solid black; */
 }
 
 .userIcon {
   grid-area: userIcon;
-  border: 2px solid black;
+  /* border: 1px solid black; */
+  font-size: 30px;
+  color: rgb(86, 126, 86);
 }
 
 .userName {
   grid-area: userName;
-  border: 2px solid black;
+  font-size: 24px;
+  /* border: 1px solid black; */
 }
 
 .bellIcon {
   grid-area: bellIcon;
-  border: 2px solid black;
+  /* border: 1px solid black; */
+  font-size: 22px;
 }
 
 .conversationIcon {
   grid-area: conversationIcon;
-  border: 2px solid black;
+  /* border: 1px solid black; */
+  font-size: 22px;
 }
 
 .listIcon {
   grid-area: listIcon;
-  border: 2px solid black;
+  /* border: 2px solid black; */
+  font-size: 25px;
 }
 
 .listName {
   grid-area: listName;
-  border: 2px solid black;
+  /* border: 2px solid black; */
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.listName:hover {
+  font-style: italic;
+  text-decoration: underline;
 }
 
 .counter {
   grid-area: counter;
-  border: 2px solid black;
+  /* border: 2px solid black; */
+  font-size: 20px;
+  cursor: pointer;
 }
 
 .EditList {
   grid-area: EditList;
-  border: 2px solid black;
+  /* border: 2px solid black; */
+  font-size: 20px;
+  cursor: pointer;
 }
 
-.plusButton {
-  grid-area: plusButton;
-  border: 2px solid black;
+#inputForList {
+  margin-bottom: 0% !important;
 }
 
-.createListText {
-  grid-area: createListText;
-  border: 2px solid black;
+#inputVal {
+  font-size: 20px;
+}
+
+#updateListBtn {
+  font-size: 20px;
+}
+
+#newTodoInput,
+#newListName {
+  font-size: 22px;
+  align-self: center;
+}
+
+#addNewTask,
+#addNewList {
+  font-size: 22px;
+  vertical-align: middle;
+}
+
+#plusSign {
+  padding: 5px;
 }
 
 .tasks {
   display: grid;
   grid-area: tasks;
   grid-template-rows: 45px 45px 1fr;
-  border: 2px solid black;
+  /* border: 2px solid black; */
   list-style-type: none;
 }
 
@@ -130,43 +173,47 @@
   grid-template-columns: 30px 1fr;
 }
 
+.taskList {
+  padding: 2.8rem 0;
+  width: 98%;
+  margin: 0 auto;
+}
+
 .taskList_sub {
-  height: 35px;
+  height: 45px;
   display: grid;
   grid-template-areas: 'starIcon taskItem editButton deleteButton';
-  grid-template-columns: 30px 1fr 30px 30px;
-  border: 2px solid green;
+  grid-template-columns: 30px 1fr 45px 30px;
+  /* border: 2px solid green; */
 }
 
 .starIcon {
+  cursor: pointer;
   grid-area: starIcon;
-  border: 2px solid black;
+  /* border: 2px solid black; */
 }
 
 .taskItem {
   grid-area: taskItem;
-  border: 2px solid black;
+  /* border: 2px solid black; */
 }
 
 .editButton {
+  cursor: pointer;
+  text-align: center;
   grid-area: editButton;
-  border: 2px solid black;
+  /* border: 2px solid black; */
 }
 
 .deleteButton {
+  cursor: pointer;
+  text-align: center;
   grid-area: deleteButton;
-  border: 2px solid black;
+  /* border: 2px solid black; */
 }
 
-/* New css code by khadar */
-.body {
-  font-family: 'Indie Flower', cursive;
-  color: #fff;
-  /* background-image: url('/img_bkground.jpg'); */
-}
-
-/* -------This is the h1 title That also will become the todo list-------- */
-.title {
+.verticalAlign {
+  vertical-align: bottom;
 }
 
 /* Toolbar background color changed*/
@@ -180,26 +227,15 @@
   color: #fff;
 }
 
-#newTodoInput,
-.plusIcon {
-  background-color: rgb(86, 126, 86);
-  border-radius: 5px;
-  border: none;
-  color: #fff;
-  padding: 1rem;
-}
-
-/* This is hidden until it is connectet to database */
-.taskList_sub {
-  display: none;
+.title {
+  padding-left: 10px;
 }
 
 .tasks {
   background: linear-gradient(rgba(29, 38, 113, 0.8), rgba(86, 126, 86, 0.8)),
-    url('/img_toronto.jpg'); /* The least supported option. */
-  /* background-image: url('/img_toronto.jpg'); */
+    url('/img/img_toronto.jpg'); /* The least supported option. */
   background-repeat: no-repeat;
-  background-size: 100% 100%;
+  background-size: 100%;
   background-color: rgb(86, 126, 86, 0.9);
   /* opacity: 0.7; */
 }

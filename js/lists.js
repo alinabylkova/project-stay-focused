@@ -11,10 +11,10 @@ function displayList() {
         // todo improve counter ${lists[i].tasks.length}
         let generatedHtml = `
         <div class="listArea_sub" listId="${lists[i]._id}">
-          <div class="listIcon">b</div>
+          <div class="listIcon"><i class="fas fa-list"></i></div>
           <div class="listName">${lists[i].listName}</div>
-          <div class="counter"><i class="fas fa-edit editList"></i></div>
-          <div class="EditList"><i class="fas fa-trash-alt deleteList"></i></div>
+          <div class="counter"><i class="fas fa-edit editList verticalAlign"></i></div>
+          <div class="EditList"><i class="fas fa-trash-alt verticalAlign deleteList"></i></div>
         </div>`;
 
         $('.listArea').append(generatedHtml);
@@ -91,8 +91,8 @@ function applyJqueryToList() {
     let text = workElement.text();
     workElement.empty();
     let inputValue = `
-    <div class="input-group mb-3">
-      <input value="${text}" type="text" class="form-control" placeholder="List's name" aria-label="List's name" aria-describedby="basic-addon2">
+    <div id='inputForList' class="input-group mb-3">
+      <input value="${text}" type="text" id='inputVal' class="form-control" placeholder="List's name">
       <div class="input-group-append">
         <button id="updateListBtn" class="btn btn-outline-secondary" type="button"><i class="fas fa-save"></i></button>
       </div>

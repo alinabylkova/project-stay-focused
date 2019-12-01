@@ -1,8 +1,10 @@
 //Display tasks or Get specific list with all related tasks
 function displayTasks() {
   // check weather listId is emptyText or undefined or null or 0
+  console.log(sessionStorage.getItem('listId'));
   if (!sessionStorage.getItem('listId')) {
     $('.taskList').empty();
+    $('.title').text('Please select a list');
     return;
   }
   $.ajax({
@@ -23,12 +25,14 @@ function displayTasks() {
         <div class="taskList_sub" taskId="${tasks[i]._id}"> 
           <div class="starIcon" ><i class="${starIconClass} fa-star importantStar"></i></div>
           <div class="taskItem" >${tasks[i].taskMessage}</div>
-          <div class="editButton"><i class="fas fa-edit editTask"></i></div>
-          <div class="deleteButton"><i class="fas fa-trash-alt deleteTask"></i></div>
+          <div class="editButton"><i class="fas fa-edit verticalAlign editTask"></i></div>
+          <div class="deleteButton"><i class="fas fa-trash-alt verticalAlign deleteTask"></i></div>
         </div>`;
 
         $('.taskList').append(html);
       }
+
+      $('.title').text(data.listName);
       applyJqueryToTasks();
     })
     .fail(function(xhr, status, reason) {
@@ -120,7 +124,7 @@ function applyJqueryToTasks() {
     workElement.empty();
     let inputValue = `
     <div class="input-group mb-3">
-      <input value="${text}" type="text" class="form-control" placeholder="Task message" aria-label="Task message" aria-describedby="basic-addon2">
+      <input value="${text}" type="text" class="form-control" placeholder="Task message">
       <div class="input-group-append">
         <button id="updateTaskBtn" class="btn btn-outline-secondary" type="button"><i class="fas fa-save"></i></button>
       </div>

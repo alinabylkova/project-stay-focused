@@ -40,35 +40,68 @@
       <div class="mainInterface">
         <div class="navigation">
           <div class="searchToolBar">
-            <div class="toggleIcon">=</div>
+            <div class="toggleIcon"><i id="toggleIcon" class="verticalAlign fas fa-list"></i></div>
             <div class="searchInput"></div>
-            <div class="searchIcon">O</div>
+            <div class="searchIcon">
+              <i id="searchIcon" class="verticalAlign fas fa-search"></i>
+            </div>
           </div>
           <div class="userToolBar">
-            <div class="userIcon">a</div>
-            <div class="userName">a</div>
-            <div class="bellIcon">a</div>
-            <div class="conversationIcon">a</div>
+            <div class="userIcon"><i id="userIcon" class="fas fa-circle"></i></div>
+            <div class="userName">User Name</div>
+            <div class="bellIcon"><i class="verticalAlign far fa-bell"></i></div>
+            <div class="conversationIcon"><i class="verticalAlign far fa-comment"></i></div>
           </div>
           <div class="listArea">
             <!-- populated via js -->
           </div>
-          <div class="addList">
-            <div class="plusButton"><i id="addNewList" class="fas fa-plus-square"></i></div>
+          <div class="addList input-group mb-3">
+            <div class="plusButton input-group-prepend">
+              <button id="plusSign" class="btn btn-outline-secondary" type="button">
+                <i id="addNewList" class="fas fa-plus-square"></i>
+              </button>
+            </div>
+            <!-- <div class="createListText"> -->
+            <input
+              id="newListName"
+              type="text"
+              class="createListText form-control"
+              placeholder="Create a list"
+              aria-label=""
+              aria-describedby="basic-addon1"
+            />
+            <!-- </div> -->
+          </div>
+
+          <!-- <div class="addList">
+            <div class="plusButton">
+              <i id="addNewList" class="fas fa-plus-square"></i>
+            </div>
             <div class="createListText">
               <input id="newListName" type="text" placeholder="Create a list" />
             </div>
-          </div>
+          </div> -->
         </div>
         <div class="tasks">
           <div class="listToolBar">
-            <h1 class="title">To do</h1>
+            <h1 class="title">Please select a list</h1>
             <div class="actionBar"></div>
           </div>
           <div class="taskArea">
-            <div class="addTask">
-              <button class="plusIcon"><i id="addNewTask" class="fas fa-plus-square"></i></button>
-              <input id="newTodoInput" type="text" placeholder="Add new to-do..." />
+            <div class="addTask input-group mb-3">
+              <!-- Begin -->
+
+              <div class="plusButton input-group-prepend">
+                <button id="addNewTask" class="btn btn-outline-secondary" type="button">
+                  <i class="fas fa-plus-square"></i>
+                </button>
+              </div>
+              <input
+                id="newTodoInput"
+                type="text"
+                class="createListText form-control"
+                placeholder="Create a task"
+              />
             </div>
           </div>
           <div class="taskList">

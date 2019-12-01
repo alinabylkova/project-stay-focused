@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html class="no-js">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Stay Focused !</title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="css/login.css" />
+    <!--JQuery-->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  </head>
+  <body>
+    <div class="heading">
+      <h1>... Stay Focused ...</h1>
+    </div>
+    <div class="absolute-wrap-signup">
+      <div class="signup-wrap hide">
+        <form action="">
+          <div class="row">
+            <div class="col-12">
+              <h1 class="hide-fade">Sign Up</h1>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <div class="input-group hide-down">
+                <input type="text" />
+                <span class="valid-icon"></span>
+                <label for="name">Name</label>
+                <span class="bottom-border"></span>
+              </div>
+              <div class="input-group">
+                <input type="email" class="check-email" />
+                <span class="valid-icon"></span>
+                <label for="email">Email</label>
+                <span class="bottom-border"></span>
+              </div>
+              <div class="input-group">
+                <input type="password" class="check-password" />
+                <span class="valid-icon"></span>
+                <label for="password">Password</label>
+                <span class="bottom-border"></span>
+              </div>
+              <div class="input-group hide-up">
+                <input type="password" class="check-equal" />
+                <span class="valid-icon"></span>
+                <label for="password">Verify Password</label>
+                <span class="bottom-border"></span>
+              </div>
+            </div>
+          </div>
+          <div class="row login-footer">
+            <div class="col-7">
+              <a href="#" class="btn">Sign Up</a>
+            </div>
+            <div class="col-5">
+              <a class="btn btn-pink hide-signup-btn" id="show-signup" href="#">Login</a>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="login-wrap">
+      <form action="" id="test-form">
+        <div class="row">
+          <div class="col-12">
+            <h1 class="hide-fade delay-6">Login</h1>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div class="input-group">
+              <input id="emailInput" type="email" class="check-email" />
+              <span class="valid-icon"></span>
+              <label for="email">Email</label>
+              <span class="bottom-border"></span>
+            </div>
+            <div class="input-group">
+              <input id="passwordInput" type="password" class="check-password" />
+              <span class="valid-icon"></span>
+              <label for="password">Password</label>
+              <span class="bottom-border"></span>
+            </div>
+          </div>
+        </div>
+        <div class="row login-footer">
+          <div class="col-7">
+            <a href="#" id="loginBtn" class="btn logBtn">Login</a>
+          </div>
+          <div class="col-5">
+            <a id="signUpBtn" class="btn btn-pink show-signup-btn" href="#">Sign Up</a>
+          </div>
+        </div>
+      </form>
+    </div>
+    <script>
+      $('#loginBtn').click(function() {
+        let userName = $('#emailInput').val();
+        let userPassword = $('#passwordInput').val();
+
+        if (userName.length !== 0 && userPassword !== 0) {
+          $.ajax({
+            url: 'login',
+            type: 'POST',
+            data: {
+              username: userName,
+              password: userPassword,
+            },
+          })
+            .done(function(data) {
+              window.location.replace(data);
+            })
+            .fail(function(xhr, status, reason) {
+              alert('Wrong user name or password');
+            });
+        }
+      });
+
+      $('#signUpBtn').click(function() {
+        let signUpBtn = $(this);
+        // console.log($('#emailInput'));
+        let userName = $('#emailInput').val();
+        let userPassword = $('#passwordInput').val();
+        console.log(userPassword);
+        if (userName.length !== 0 && userPassword !== 0) {
+          $.ajax({
+            url: 'users',
+            type: 'POST',
+            data: {
+              userLogin: userName,
+              userPassword: userPassword,
+            },
+          })
+            .done(function(object) {
+              alert('User successfully created, please log in');
+            })
+            .fail(function(xhr, status, reason) {
+              alert('User creation failed');
+            });
+        }
+      });
+    </script>
+  </body>
+</html>
