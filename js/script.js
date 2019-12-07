@@ -16,6 +16,15 @@ if (document.cookie.startsWith('token=') && document.cookie.length > 7) {
     $('#newTodoInput').val('');
   });
 
+  $('#userIcon').click(function() {
+    $.ajax({
+      url: '/logout',
+      type: 'GET',
+    }).done(function(data) {
+      window.location.replace(data);
+    });
+  });
+
   displayList();
 } else {
   window.location.replace('/login');

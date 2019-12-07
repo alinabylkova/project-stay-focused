@@ -8,7 +8,7 @@ const server = express();
 server.use(cookieParser()); // Parse Cookies
 server.use(express.urlencoded()); //Parse URL-encoded bodies instead of body-parser
 
-const mongoDb = process.env.MONGO_DB || 'db-user:uNqPYeGtHMMEjiNn';
+const mongoDb = process.env.MONGO_DB || 'user:pass';
 const port = process.env.PORT || 3000;
 const Schema = mongoose.Schema; //we can give any name to our const and mongoose.Schema means that we refer to object inside mongoose named Schema
 
@@ -172,6 +172,12 @@ server.post('/login', function(req, res) {
   });
 });
 
+server.get('/logout', function(req, res) {
+  let yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  //To set a expiration date for our cookies
+  res.cookie('token', '', { expires: yesterday }).send('/login');
+});
 //crud for tasks
 
 // “/tasks/:id” => “Get specific task”
