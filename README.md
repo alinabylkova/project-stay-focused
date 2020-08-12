@@ -1,8 +1,8 @@
-# Stay focused - Graduation project at HackTechGo coding bootcamp
+# Stay focused
 
-Team project "Stay focused" by 2019 fall alumini - Alina, Kadar and Shruti
+Graduation project at HackTechGo coding bootcamp fall 2019
 
-### About
+## About
 
 Stay focused is a task manager application which allows users to track and manage their tasks, ideas and projects by creating different to-do lists and to-do groups.
 
@@ -14,6 +14,6 @@ The application is hosted on Heroku and database is stored on MongoDB Atlas.
 
 The project is developed in close collaboration with project partners Shruti Bhide and Khadar Adareh.
 
-### Link
+## Link
 
 https://stayfocusedapp.herokuapp.com/
